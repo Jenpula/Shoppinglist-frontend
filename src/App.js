@@ -6,7 +6,6 @@ const URL = 'http://localhost/shoppingList/';
 function App() {
   const [task,setTask] = useState('');
   const [tasks,setTasks] = useState([]);
-  const [amount, setAmount] = useState('');
 
   useEffect(() => {
     axios.get(URL)
@@ -55,13 +54,12 @@ function App() {
       <form onSubmit={save}>
         <label>New item</label>
         <input value={task} placeholder='Add a new task' onChange={e => setTask(e.target.value)} />
-        <input value={amount} placeholder='type amount' onChange={e => setAmount(e.target.value)} />
+        <input value={task} placeholder='Add a new task' onChange={e => setTask(e.target.value)} />
         <button>Add</button>
       </form>
       <ol>
         {tasks?.map(task =>(
-          <li key={task.id}>
-            {task.description}
+          <li key={task.id}>{task.description} {task.amount}
           <a href='#' className='delete' onClick={() => remove(task.id)}>
             Delete
             </a>
