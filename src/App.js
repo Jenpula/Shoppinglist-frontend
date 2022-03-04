@@ -1,74 +1,78 @@
 import { useState, useEffect} from 'react';
 import './App.css';
 import axios from 'axios';
+
 const URL = 'http://localhost/shoppingList/';
 
 function App() {
-  const [task,setTask] = useState('');
-  const [tasks,setTasks] = useState([]);
+  const [items, setItems] = useState([]);
+  const [item, setItem] = useState('');
+  const [amount, setAmount] = useState('');
 
-  useEffect(() => {
-    axios.get(URL)
-      .then((response) => {
-        setTasks(response.data);
-      }).catch(error => {
-        alert(error.response ? error.response.data.error : error);
-      });
-  }, [])
-  
-  function save(e) {
-    e.preventDefault();
-    const json = JSON.stringify({description:task});
-    axios.post(URL + 'add.php',json, {
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    })
-    .then((response) => {
-      setTasks(tasks => [...tasks,response.data]);
-      setTask('');
-    }).catch(error => {
-      alert(error.response.data.error);
-    })
-  }
 
-  function remove(id) {
-    const json = JSON.stringify({id:id})
-    axios.post(URL + 'delete.php', json, {
-      headers: {
-        'Content-type' : 'application/json'
-      }
-    })
-    .then((response) => {
-      const newListWithoutRemoved = tasks.filter((item) => item.id !== id);
-      setTasks(newListWithoutRemoved);
-    }).catch (error => {
-      alert(error.response ? error.response.data.error : error);
-    })
-  }
- 
-  
-  return (
-    <div className='container'>
-      <h3>Shopping list</h3>
-      <form onSubmit={save}>
-        <label>New item</label>
-        <input value={task} placeholder='Add a new task' onChange={e => setTask(e.target.value)} />
-        <input value={task} placeholder='Add a new task' onChange={e => setTask(e.target.value)} />
-        <button>Add</button>
-      </form>
-      <ol>
-        {tasks?.map(task =>(
-          <li key={task.id}>{task.description} {task.amount}
-          <a href='#' className='delete' onClick={() => remove(task.id)}>
-            Delete
-            </a>
-          </li>
-        ))}
-      </ol>
-    </div>
-  );
+useEffect(() => {
+  axios.get(URL)
+  .then((response) => {
+    setItems(response.data)
+  }).catch(error => {
+    alert(error.response ? error.response.data.error :error);
+  })
+}, [])
+
+
+function add(e) {
+  e.preventDefault();
+  const json = JSON.stringify({description:item, amount:amount})
+  axios.post(URL + 'add.php', json, {
+    headers: {
+      'Content-Type' : 'application/json'
+    }
+  })
+  .then((response) =>{
+    setItems(items => [...items,response.data]);
+    setItem('');
+    setAmount('');
+  }).catch (error => {
+    alert(error.response.data.error)
+  });
 }
+
+function remove(id) {
+  const json = JSON.stringify({id:id})
+  axios.post(URL + 'delete.php', json, {
+    headers: {
+      'Content-Type' : 'application/json'
+    }
+  })
+  .then((response) => {
+    const newListWihtoutRemoved = items.filter((item) => item.id !== id);
+    setItems(newListWihtoutRemoved);
+  }).catch (error => {
+    alert(error.response ? error.response.data.error : error);
+  });
+}
+
+return (
+  <div className='container'>
+    <h3>Shopping list</h3>
+    <form onSubmit={add}>
+      <label>New item</label>
+      <input value={item} onChange={e => setItem(e.target.value)} placeholder='Item'></input>
+      <input value={amount} onChange={e => setAmount(e.target.value)} placeholder='Amount'></input>
+      <button>Add</button>
+    </form>
+  <ol> {items?.map(item => (
+    <li key= {item.id}>{item.description} {item.amount}
+    <a href='#' className='delete' onClick={() => remove(item.id)}>Delete</a>
+    </li>
+  ))}
+  </ol>
+  </div>
+
+);
+}
+
+
 
 export default App;
 
