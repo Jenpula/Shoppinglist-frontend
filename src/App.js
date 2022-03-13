@@ -2,7 +2,7 @@ import { useState, useEffect} from 'react';
 import './App.css';
 import axios from 'axios';
 
-const URL = 'http://localhost/shoppingList/';
+const URL = 'http://localhost/shoppinglist/';
 
 function App() {
   const [items, setItems] = useState([]);
@@ -64,15 +64,11 @@ return (
   <ol> {items?.map(item => (
     <li key= {item.id}>{item.description} {item.amount}
     <a href='#' className='delete' onClick={() => remove(item.id)}>Delete</a>
-    </li>
+   </li>
   ))}
   </ol>
   </div>
-
 );
 }
-
-
-
 export default App;
 
